@@ -25,7 +25,7 @@ Windows 平台 · C++17 · IOCP 高并发 · WebView2 现代化界面
 
 **SocksWPE** 是一款运行在 Windows 平台的高性能网络代理与封包处理工具，把 **SOCKS5 代理服务**、**WPE 风格封包滤镜引擎**、**SSL 中间人解密**、**AntiCC 防护** 和 **多实例管理** 融合在一个程序里。
 
-底层采用 **IOCP（完成端口）线程池**扛高并发，界面基于 **WebView2** 用现代 Web 技术渲染，配置与数据用 **SQLite** 持久化，支持**云端授权与配置下发**。
+底层采用 **IOCP（完成端口）线程池**扛高并发，界面基于 **WebView2** 用现代 Web 技术渲染，配置与数据用 **SQLite** 持久化。
 
 一句话：**收得到、改得动、扛得住、管得多。**
 
@@ -74,12 +74,6 @@ Windows 平台 · C++17 · IOCP 高并发 · WebView2 现代化界面
 - 区分「未配置」与「配置为空」
 - 授权滤镜 / 默认启用 / 用户启用三级生效逻辑
 
-### ☁️ 云端集成（CloudIntegration）
-- **云端授权 / 卡密验证**（账号模式 + 卡密模式双登录）
-- **配置下发**：策略、AntiCC 配置、WPE 滤镜规则、SOCKS 账号
-- **远程许可**：启停实例、应用运行时配置、导出快照均可云端授权
-- **上报**：事件上报、指标上报
-
 ### 🖥️ 界面与接口
 - **WebView2 现代化 UI**：`web/` 目录下 HTML/CSS/JS 前端
 - **HTTP API 服务器**：对外提供接口
@@ -125,7 +119,6 @@ SocksWPE/
 ├── SSLMitmContext.*             # SSL 中间人
 ├── InstanceManager.*            # 多实例管理
 ├── UserFilterManager.*          # 用户级滤镜授权
-├── CloudIntegration.*           # 云端授权/下发
 ├── IOCPThreadPool.*             # IOCP 高并发线程池
 ├── DatabaseManager.*            # SQLite 持久化
 ├── HttpApiServer.* / *Server.*  # 各类内置服务

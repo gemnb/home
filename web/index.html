@@ -1,0 +1,1097 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocksWPE v4.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Screen (Full Screen, shown when not logged in) -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo-large">
+                    <svg width="48" height="48" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 4L26 16L16 28L6 16L16 4Z" fill="url(#logoGradLarge)"/>
+                        <defs><linearGradient id="logoGradLarge" x1="6" y1="4" x2="26" y2="28"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <h1>SocksWPE v4.0</h1>
+                <p class="login-subtitle">SOCKS5数据包采集与伪心跳工具</p>
+            </div>
+
+            <div class="login-layout">
+                <div class="login-side-card glass">
+                    <div class="card-body">
+                        <div id="loginNoticeArea" class="notice-area" style="display:none; margin-bottom: 0;">
+                            <h3>云公告</h3>
+                            <div id="loginNoticeContent" class="notice-body"></div>
+                        </div>
+                        <div id="loginNoticeEmpty" class="notice-area" style="margin-bottom:0;">
+                            <h3>云公告</h3>
+                            <div class="notice-body">当前暂无云公告</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login-center-card login-card glass">
+                    <div class="card-body">
+                        <!-- Tab Navigation -->
+                        <div class="login-tabs">
+                            <button class="login-tab active" data-tab="login">登录</button>
+                            <button class="login-tab" data-tab="register">注册</button>
+                            <button class="login-tab" data-tab="renew">续费</button>
+                        </div>
+
+                    <!-- Login Tab -->
+                    <div id="tab-login" class="tab-content active">
+                        <div class="login-tabs" id="loginModeTabs" style="margin-bottom: 18px;">
+                            <button class="login-tab active" id="loginModeAccount" type="button" data-login-mode="account">账号模式</button>
+                            <button class="login-tab" id="loginModeCard" type="button" data-login-mode="card">卡密模式</button>
+                        </div>
+                        <div id="loginModeHint" style="margin-bottom: 14px; color: var(--text-muted); font-size: 12px;">
+                            当前为账号模式，使用账号和密码登录。
+                        </div>
+                        <div class="form-group">
+                            <label for="loginUsername" id="loginIdentityLabel">账号</label>
+                            <input type="text" id="loginUsername" class="input" placeholder="请输入账号" autofocus>
+                        </div>
+                        <div class="form-group" id="loginPasswordGroup">
+                            <label for="loginPassword">密码</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="loginPassword" class="input password-input" placeholder="请输入密码">
+                                <button type="button" id="loginPasswordToggle" class="password-toggle" aria-label="显示密码" title="显示密码">
+                                    <svg class="password-toggle-icon password-toggle-icon-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="password-toggle-icon password-toggle-icon-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17.94 17.94A10.94 10.94 0 0112 19C5 19 1 12 1 12a21.77 21.77 0 015.06-6.94"></path>
+                                        <path d="M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 8 11 8a21.8 21.8 0 01-3.22 4.68"></path>
+                                        <path d="M14.12 14.12a3 3 0 01-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="login-options">
+                            <label class="checkbox-wrap login-option-inline">
+                                <input type="checkbox" id="rememberPassword">
+                                <span>记住登录信息</span>
+                            </label>
+                            <label class="checkbox-wrap login-option-inline">
+                                <input type="checkbox" id="autoLogin">
+                                <span>自动登录</span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button id="btnLoginSubmit" class="btn btn-primary btn-glow btn-large">
+                                <span id="loginBtnText">登录</span>
+                            </button>
+                            <button id="btnTrialLoginSubmit" type="button" class="btn btn-ghost btn-large">
+                                <span id="trialLoginBtnText">试用登录</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Register Tab -->
+                    <div id="tab-register" class="tab-content">
+                        <div class="form-group">
+                            <label for="registerUsername">账号</label>
+                            <input type="text" id="registerUsername" class="input" placeholder="请输入账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="registerPassword" class="input password-input" placeholder="请输入密码">
+                                <button type="button" id="registerPasswordToggle" class="password-toggle" aria-label="显示密码" title="显示密码">
+                                    <svg class="password-toggle-icon password-toggle-icon-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="password-toggle-icon password-toggle-icon-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17.94 17.94A10.94 10.94 0 0112 19C5 19 1 12 1 12a21.77 21.77 0 015.06-6.94"></path>
+                                        <path d="M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 8 11 8a21.8 21.8 0 01-3.22 4.68"></path>
+                                        <path d="M14.12 14.12a3 3 0 01-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerSuperPassword">超级密码</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="registerSuperPassword" class="input password-input" placeholder="用于找回密码">
+                                <button type="button" id="registerSuperPasswordToggle" class="password-toggle" aria-label="显示密码" title="显示密码">
+                                    <svg class="password-toggle-icon password-toggle-icon-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="password-toggle-icon password-toggle-icon-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17.94 17.94A10.94 10.94 0 0112 19C5 19 1 12 1 12a21.77 21.77 0 015.06-6.94"></path>
+                                        <path d="M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 8 11 8a21.8 21.8 0 01-3.22 4.68"></path>
+                                        <path d="M14.12 14.12a3 3 0 01-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerCards">注册卡号（多个用换行分隔）</label>
+                            <textarea id="registerCards" class="input textarea" rows="3" placeholder="请输入注册卡号"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button id="btnRegisterSubmit" class="btn btn-primary btn-large">
+                                <span id="registerBtnText">注册</span>
+                            </button>
+                        </div>
+                        <div id="registerMessage" class="message-area"></div>
+                    </div>
+
+                    <!-- Renew Tab -->
+                    <div id="tab-renew" class="tab-content">
+                        <div class="form-group">
+                            <label for="renewUsername">账号</label>
+                            <input type="text" id="renewUsername" class="input" placeholder="请输入账号">
+                        </div>
+                        <div class="form-group">
+                            <label for="renewPassword">密码</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="renewPassword" class="input password-input" placeholder="请输入密码">
+                                <button type="button" id="renewPasswordToggle" class="password-toggle" aria-label="显示密码" title="显示密码">
+                                    <svg class="password-toggle-icon password-toggle-icon-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="password-toggle-icon password-toggle-icon-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17.94 17.94A10.94 10.94 0 0112 19C5 19 1 12 1 12a21.77 21.77 0 015.06-6.94"></path>
+                                        <path d="M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 8 11 8a21.8 21.8 0 01-3.22 4.68"></path>
+                                        <path d="M14.12 14.12a3 3 0 01-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="renewCards">充值卡号（多个用换行分隔）</label>
+                            <textarea id="renewCards" class="input textarea" rows="3" placeholder="请输入充值卡号"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button id="btnRenewSubmit" class="btn btn-primary btn-large">
+                                <span id="renewBtnText">续费/充值</span>
+                            </button>
+                        </div>
+                        <div id="renewMessage" class="message-area"></div>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="login-side-card glass">
+                    <div class="card-body">
+                        <div class="remote-mode-panel remote-mode-panel-side">
+                            <div class="remote-mode-header">
+                                <label class="checkbox-wrap">
+                                    <input type="checkbox" id="enableRemoteBrowserMode">
+                                    <span>启用远程浏览器模式</span>
+                                </label>
+                                <button id="btnRemoteModeApply" type="button" class="btn btn-ghost btn-sm">应用</button>
+                            </div>
+                            <div id="remoteModeConfigArea" style="display:none;">
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="remoteBindHost">监听地址</label>
+                                    <input type="text" id="remoteBindHost" class="input" value="0.0.0.0" placeholder="0.0.0.0 / 127.0.0.1">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="remoteBindPort">监听端口</label>
+                                    <input type="number" id="remoteBindPort" class="input" value="18080" min="1" max="65535">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <label for="remoteAccessToken">访问令牌</label>
+                                    <div class="token-inline-row">
+                                        <input type="text" id="remoteAccessToken" class="input" placeholder="留空自动生成">
+                                        <button id="btnGenerateRemoteToken" type="button" class="btn btn-ghost btn-sm">生成新令牌</button>
+                                    </div>
+                                </div>
+                                <div id="remoteModeUrlArea" class="remote-mode-url" style="display:none;">
+                                    <span id="remoteModeUrlText" class="remote-mode-url-text"></span>
+                                    <button id="btnCopyRemoteUrl" type="button" class="btn btn-ghost btn-sm remote-mode-url-copy">复制链接</button>
+                                </div>
+                                <div class="remote-mode-tips">提示：默认 0.0.0.0 对所有网卡监听；如需仅本机访问，请改成 127.0.0.1。公网访问仍需放行端口或做映射。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (shown after login) -->
+    <div id="mainApp" class="app-wrapper" style="display:none;">
+        <!-- Top Bar -->
+        <header class="top-bar" id="topBarDragRegion">
+            <div class="top-bar-left">
+                <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-label="切换菜单">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 4L26 16L16 28L6 16L16 4Z" fill="url(#logoGrad)"/>
+                            <defs><linearGradient id="logoGrad" x1="6" y1="4" x2="26" y2="28"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <span class="logo-text">SocksWPE v4.0</span>
+                </div>
+            </div>
+            <div class="top-bar-center">
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">未登录</span>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="window-controls">
+                    <button class="window-btn" onclick="minimizeWindow()" title="最小化">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1">
+                            <line x1="0" y1="6" x2="12" y2="6"/>
+                        </svg>
+                    </button>
+                    <button class="window-btn" onclick="maximizeWindow()" title="最大化">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1">
+                            <rect x="1" y="1" width="10" height="10"/>
+                        </svg>
+                    </button>
+                    <button class="window-btn window-btn-close" onclick="closeWindow()" title="关闭">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1">
+                            <line x1="1" y1="1" x2="11" y2="11"/>
+                            <line x1="11" y1="1" x2="1" y2="11"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
+
+        <div class="app-body">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-page="home">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        <span>主页面</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="instances">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        <span>实例管理</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="proxydata">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <span>代理数据</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="accounts">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>SOCKS5账号</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="online">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <span>在线统计</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="wpe">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        <span>WPE滤镜</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="remote-browser">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="18" x2="12" y2="20"/></svg>
+                        <span>远程浏览器</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="anticc">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>防CC配置</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="logs">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        <span>日志</span>
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-row">
+                            <span class="sidebar-info-label">账号:</span>
+                            <span class="sidebar-info-value" id="sidebarUsername">-</span>
+                        </div>
+                        <div class="sidebar-user-row">
+                            <span class="sidebar-info-label">到期:</span>
+                            <span class="sidebar-info-value" id="sidebarExpire">-</span>
+                        </div>
+                        <div class="sidebar-user-row">
+                            <span class="sidebar-info-label">剩余:</span>
+                            <span class="sidebar-info-value" id="sidebarRemaining">-</span>
+                        </div>
+                        <div class="sidebar-user-row">
+                            <span class="sidebar-info-label">运行:</span>
+                            <span class="sidebar-info-value" id="sidebarInstances">0/0</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Home Page (主菜单) -->
+                <div id="page-home" class="page active">
+                    <div class="page-title">
+                        <h1>主页面</h1>
+                        <p class="page-subtitle">系统概览与快速操作</p>
+                    </div>
+
+                    <!-- User Info Card (shown after login) -->
+                    <div class="card glass" id="userInfoCard">
+                        <div class="card-body">
+                            <div class="card-icon-header">
+                                <div class="icon-circle icon-success">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                                <div>
+                                    <h2 id="homeUsername">已登录</h2>
+                                    <p id="homeExpireInfo">到期时间: -</p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button id="btnLogout" class="btn btn-ghost">登出</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fast Mode (Home) -->
+                    <div class="card glass" id="fastModeCard">
+                        <div class="card-body">
+                            <h3 class="section-title">极速模式</h3>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="checkbox-wrap" title="开启后将停止记录全部日志，用于降低开销。关闭后恢复当前日志行为。">
+                                    <input type="checkbox" id="fastModeEnabled" onchange="toggleFastMode()">
+                                    <span>开启极速模式（停止全部日志输出）</span>
+                                </label>
+                                <div style="margin-top: 8px; color: var(--text-muted); font-size: 12px; line-height: 1.5;">
+                                    提示：极速模式开启后，“日志”页面将不会产生新的日志记录；业务功能不受影响，但排查问题时建议关闭极速模式。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notice Card -->
+                    <div class="card glass" id="noticeCard" style="display:none;">
+                        <div class="card-body">
+                            <h3 class="section-title">云公告</h3>
+                            <div id="noticeContent" class="notice-text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Recharge Card (卡密充值) -->
+                    <div class="card glass" id="rechargeCard">
+                        <div class="card-body">
+                            <h3 class="section-title">卡密充值</h3>
+                            <div class="form-group">
+                                <label>充值卡 (可多行，一行一个)</label>
+                                <textarea id="rechargeCards" class="input" rows="4" placeholder="请输入充值卡号，每行一个"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button id="btnRecharge" class="btn btn-primary">续费/充值</button>
+                            </div>
+                            <div id="rechargeMessage" class="message-area" style="display:none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card glass" id="quickActionsCard">
+                        <div class="card-body">
+                            <h3 class="section-title">快速操作</h3>
+                            <div class="quick-actions">
+                                <button class="btn btn-ghost" onclick="navigateTo('instances')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                                    实例管理
+                                </button>
+                                <button class="btn btn-ghost" onclick="navigateTo('accounts')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    SOCKS5账号
+                                </button>
+                                <button class="btn btn-ghost" onclick="navigateTo('wpe')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                    WPE滤镜
+                                </button>
+                                <button class="btn btn-ghost" onclick="navigateTo('logs')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                                    日志
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-remote-browser" class="page">
+                    <div class="page-title">
+                        <h1>远程浏览器模式</h1>
+                        <p class="page-subtitle">登录后可直接管理远程浏览器模式参数</p>
+                    </div>
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="remote-mode-panel remote-mode-panel-page">
+                                <div class="remote-mode-header">
+                                    <label class="checkbox-wrap">
+                                        <input type="checkbox" id="appEnableRemoteBrowserMode">
+                                        <span>启用远程浏览器模式</span>
+                                    </label>
+                                    <button id="appBtnRemoteModeApply" type="button" class="btn btn-ghost btn-sm">应用</button>
+                                </div>
+                                <div id="appRemoteModeConfigArea" style="display:none;">
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="appRemoteBindHost">监听地址</label>
+                                        <input type="text" id="appRemoteBindHost" class="input" value="0.0.0.0" placeholder="0.0.0.0 / 127.0.0.1">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="appRemoteBindPort">监听端口</label>
+                                        <input type="number" id="appRemoteBindPort" class="input" value="18080" min="1" max="65535">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <label for="appRemoteAccessToken">访问令牌</label>
+                                        <div class="token-inline-row">
+                                            <input type="text" id="appRemoteAccessToken" class="input" placeholder="留空自动生成">
+                                            <button id="appBtnGenerateRemoteToken" type="button" class="btn btn-ghost btn-sm">生成新令牌</button>
+                                        </div>
+                                    </div>
+                                    <div id="appRemoteModeUrlArea" class="remote-mode-url" style="display:none;">
+                                        <span id="appRemoteModeUrlText" class="remote-mode-url-text"></span>
+                                        <button id="appBtnCopyRemoteUrl" type="button" class="btn btn-ghost btn-sm remote-mode-url-copy">复制链接</button>
+                                    </div>
+                                    <div class="remote-mode-tips">提示：默认 0.0.0.0 对所有网卡监听；如需仅本机访问，请改成 127.0.0.1。公网访问仍需放行端口或做映射。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Instances Page (实例管理) -->
+                <div id="page-instances" class="page">
+                    <div class="page-title">
+                        <h1>实例管理</h1>
+                        <p class="page-subtitle">管理所有SOCKS5实例</p>
+                    </div>
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="toolbar">
+                                <button id="btnCreateInstance" class="btn btn-primary">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                    创建实例
+                                </button>
+                                <button id="btnExportInstances" class="btn btn-ghost">导出实例</button>
+                                <button id="btnImportInstances" class="btn btn-ghost">导入实例</button>
+                                <button id="btnRefreshInstances" class="btn btn-ghost">刷新</button>
+                            </div>
+                            <div id="instanceList" class="instance-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accounts Page (SOCKS5账号) -->
+                <div id="page-accounts" class="page">
+                    <div class="page-title">
+                        <h1>SOCKS5账号管理</h1>
+                        <p class="page-subtitle">管理SOCKS5账号库与账号</p>
+                    </div>
+                    <div class="two-panel-layout accounts-layout">
+                        <!-- 左侧：账号库列表 -->
+                        <div class="card glass accounts-pool-card">
+                            <div class="card-body two-panel-card-body accounts-pool-body">
+                                <h3 class="panel-section-title">账号库实例列表</h3>
+                                <div class="pool-create-row">
+                                    <input type="text" id="newPoolNameInline" class="input pool-create-input" placeholder="新建账号库名称">
+                                    <button class="btn btn-primary" style="padding:4px 14px; font-size:13px; white-space:nowrap;" onclick="createPoolInline()">创建</button>
+                                </div>
+                                <div id="poolListPanel" class="scroll-panel pool-list-panel"></div>
+                            </div>
+                        </div>
+                        <!-- 右侧：账号管理 -->
+                        <div class="card glass accounts-content-card">
+                            <div class="card-body two-panel-card-body accounts-content-body">
+                                <div id="accountPanelContent">
+                                    <div class="empty-state">请从左侧选择一个账号库</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proxy Data Page (代理数据) -->
+                <div id="page-proxydata" class="page">
+                    <div class="page-title">
+                        <h1>代理数据查看</h1>
+                        <p class="page-subtitle">实时查看SOCKS转发实例的数据包</p>
+                        <div class="proxy-topbar">
+                            <div class="proxy-subview-tabs" id="proxySubviewTabs">
+                                <button id="proxySubviewRawBtn" class="proxy-subview-tab active" onclick="switchProxySubview('raw')">代理数据</button>
+                                <button id="proxySubviewCharlesBtn" class="proxy-subview-tab" onclick="switchProxySubview('charles')">Charles</button>
+                            </div>
+                            <div class="proxy-toolbar-controls">
+                                <label class="proxy-toolbar-item">
+                                    <span>记录数据包</span>
+                                    <input type="checkbox" id="proxySharedRecordEnabled" style="width:16px; height:16px; cursor:pointer;" disabled>
+                                </label>
+                                <div class="proxy-toolbar-item">
+                                    <span>缓冲区大小</span>
+                                    <input type="number" id="proxySharedBufferSize" min="10" max="10000" value="200" class="input proxy-shared-buffer-input" disabled>
+                                    <button id="proxySharedSaveButton" class="btn btn-primary" type="button" disabled>保存</button>
+                                </div>
+                                <div class="proxy-toolbar-item proxy-toolbar-buttons">
+                                    <button id="proxySharedRefreshButton" class="btn btn-primary" type="button" disabled>刷新</button>
+                                    <button id="proxySharedClearButton" class="btn btn-danger" type="button" disabled>清空</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two-panel-layout proxydata-layout">
+                        <!-- 左侧：实例列表 -->
+                        <div class="card glass proxy-instance-card" id="proxyInstanceCard">
+                            <div class="card-body two-panel-card-body proxy-instance-body">
+                                <div class="proxy-instance-header">
+                                    <h3 class="panel-section-title" id="proxyInstanceTitle">SOCKS转发实例</h3>
+                                    <button id="proxyInstanceCollapseBtn" class="btn btn-ghost proxy-instance-collapse-btn" type="button" title="折叠实例菜单" aria-label="折叠实例菜单">«</button>
+                                </div>
+                                <div id="proxyInstanceListPanel" class="scroll-panel proxy-instance-list-panel"></div>
+                            </div>
+                        </div>
+                        <div class="proxy-layout-splitter" id="proxyLayoutSplitter" title="拖拽调整实例菜单宽度"></div>
+                        <!-- 右侧：数据包查看 -->
+                        <div class="card glass proxy-data-card">
+                            <div class="card-body two-panel-card-body proxy-data-body">
+                                <div id="proxyDataPanelContent">
+                                    <div class="empty-state">请从左侧选择一个实例</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Stats Page (在线统计) -->
+                <div id="page-online" class="page">
+                    <div class="page-title">
+                        <h1>在线统计</h1>
+                        <p class="page-subtitle">查看在线客户端</p>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-body" id="onlineStatsCards">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value">0</div>
+                                    <div class="stat-label">总账号数</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">0</div>
+                                    <div class="stat-label">在线账号</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">0</div>
+                                    <div class="stat-label">离线账号</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">0</div>
+                                    <div class="stat-label">总连接数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="toolbar">
+                                <div class="form-group" style="margin-bottom:0; min-width:200px;">
+                                    <select id="onlineInstanceSelector" class="input">
+                                        <option value="">全部实例</option>
+                                    </select>
+                                </div>
+                                <button id="btnRefreshOnline" class="btn btn-ghost">刷新</button>
+                            </div>
+                            <div id="onlineList" class="online-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AntiCC Page (防CC配置) -->
+                <div id="page-anticc" class="page">
+                    <div class="page-title">
+                        <h1>防CC配置</h1>
+                        <p class="page-subtitle" id="anticcInstanceSubtitle">配置当前 Socks 转发实例的防CC策略</p>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">全局状态</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>全局总连接数</label>
+                                    <input type="text" id="anticcGlobalConnectionCount" class="input" value="0" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>当前实例连接数</label>
+                                    <input type="text" id="anticcInstanceConnectionCount" class="input" value="0" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>全局压力</label>
+                                    <input type="text" id="anticcGlobalPressure" class="input" value="Normal" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>全局黑名单</label>
+                                    <div id="anticcGlobalBlacklistView" class="input" style="min-height:120px; overflow:auto; white-space:pre-wrap;"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>白名单作用域条目</label>
+                                    <div id="anticcGlobalWhitelistEntriesView" class="input" style="min-height:120px; overflow:auto; white-space:pre-wrap;"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Top IP 跨实例连接数</label>
+                                <div id="anticcTopIpConnectionsView" class="input" style="min-height:120px; overflow:auto; white-space:pre-wrap;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Config -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">基本配置</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcEnabled">
+                                    启用防CC
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="anticcTimeWindow">时间窗口(秒)</label>
+                                    <input type="number" id="anticcTimeWindow" class="input" value="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcMaxRequests">最大请求数</label>
+                                    <input type="number" id="anticcMaxRequests" class="input" value="20">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcBanTime">封禁时间(秒)</label>
+                                    <input type="number" id="anticcBanTime" class="input" value="300">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcMaxConnectionsTotal">实例最大连接数</label>
+                                    <input type="number" id="anticcMaxConnectionsTotal" class="input" value="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scope / Behavior -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">行为配置</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcUseBlacklist">
+                                    启用黑名单
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcUseWhitelist">
+                                    启用白名单
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="anticcAuthFailBanTime">认证失败封禁(秒)</label>
+                                    <input type="number" id="anticcAuthFailBanTime" class="input" value="60">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcNoAuthBanTime">无认证/协议违规封禁(秒)</label>
+                                    <input type="number" id="anticcNoAuthBanTime" class="input" value="30">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcWhitelistDuration">自动白名单时长(秒)</label>
+                                    <input type="number" id="anticcWhitelistDuration" class="input" value="3600">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rate Limiting Config -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">速率限制</h3>
+                            <div class="form-group">
+                                <label for="anticcThreadPoolMode">线程池模式</label>
+                                <select id="anticcThreadPoolMode" class="input" disabled>
+                                    <option value="iocp">由实例线程模型决定</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="anticcRateLimitEnabled">
+                                        启用速率限制
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="anticcBlockNonSocks">
+                                        拦截非SOCKS5连接
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="anticcMaxBytesPerSecond">速率阈值(请求/秒)</label>
+                                    <input type="number" id="anticcMaxBytesPerSecond" class="input" value="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcMaxPacketsPerSecond">速率时间窗口(秒)</label>
+                                    <input type="number" id="anticcMaxPacketsPerSecond" class="input" value="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduling Config -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">调度增强</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcFirewallEnabled">
+                                    启用全局防火墙规则
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcAutoBlockEnabled">
+                                    启用认证优先接入
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="anticcEnableLowPriorityEviction">
+                                    高压下驱逐低优先级连接
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="anticcAuthTimeout">认证优先队列上限</label>
+                                    <input type="number" id="anticcAuthTimeout" class="input" value="128">
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcMaxConnectionsPerIP">低优先级驱逐阈值(%)</label>
+                                    <input type="number" id="anticcMaxConnectionsPerIP" class="input" value="80">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Whitelist / Blacklist -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <h3 class="section-title">名单作用域</h3>
+                            <div class="form-group">
+                                <label for="anticcWhitelist">当前实例手动白名单（每行一个）</label>
+                                <textarea id="anticcWhitelist" class="input" rows="4" placeholder="例如:\n127.0.0.1\n192.168.1.0/24"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="anticcWhitelistScope">白名单作用域</label>
+                                    <select id="anticcWhitelistScope" class="input">
+                                        <option value="current">当前实例</option>
+                                        <option value="selected">选定实例</option>
+                                        <option value="global">全局共享</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="anticcWhitelistTargetInstances">选定实例</label>
+                                    <select id="anticcWhitelistTargetInstances" class="input" multiple size="4"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="anticcBlacklist">全局黑名单（每行一个）</label>
+                                <textarea id="anticcBlacklist" class="input" rows="4" placeholder="例如:\n10.0.0.1\n172.16.0.0/16"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="form-actions">
+                                <button id="btnSaveAntiCC" class="btn btn-primary">保存配置</button>
+                                <button id="btnResetAntiCC" class="btn btn-ghost">重置为默认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WPE Filter Page (WPE滤镜) -->
+                <div id="page-wpe" class="page">
+                    <div class="page-title">
+                        <h1>WPE滤镜管理</h1>
+                        <p class="page-subtitle" id="wpeFilterStatus">已启用: 0 | 总数: 0 | 总执行次数: 0</p>
+                    </div>
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="toolbar" style="flex-wrap:wrap; gap:6px;">
+                                <button id="btnCreateFilter" class="btn btn-primary">新建滤镜</button>
+                                <button class="btn btn-ghost" onclick="editSelectedFilter()">编辑</button>
+                                <button class="btn btn-danger" onclick="deleteSelectedFilter()">删除</button>
+                                <button class="btn btn-ghost" onclick="moveFilter('up')">上移</button>
+                                <button class="btn btn-ghost" onclick="moveFilter('down')">下移</button>
+                                <button class="btn btn-ghost" onclick="showExportDialog()">导出所选</button>
+                                <button class="btn btn-ghost" onclick="showImportDialog()">导入(解密)</button>
+                                <button class="btn btn-warning" onclick="clearFilterStats()">清空统计</button>
+                            </div>
+                            <div id="filterTableContainer" class="wpe-filter-table-wrap" style="overflow-x:auto; margin-top:12px;">
+                                <table class="data-table" id="wpeFilterTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:45px;">启用</th>
+                                            <th style="width:45px;">选择</th>
+                                            <th style="width:50px;">编号</th>
+                                            <th>名称</th>
+                                            <th style="width:60px;">模式</th>
+                                            <th style="width:80px;">动作</th>
+                                            <th style="width:80px;">方向</th>
+                                            <th style="width:70px;">执行次数</th>
+                                            <th style="width:50px;">全局</th>
+                                            <th style="width:120px;">目标实例</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="wpeFilterBody"></tbody>
+                                </table>
+                            </div>
+                            <div id="wpeFilterCardList" class="wpe-filter-card-list"></div>
+                            <div class="info-hint" style="margin-top:12px;">
+                                说明: 滤镜按列表顺序执行。双击滤镜可编辑。搜索/修改格式: 位置|十六进制值,位置|十六进制值,...<br>
+                                例如: 0|01,1|0A,2|00 表示位置0为01，位置1为0A，位置2为00。留空=跳过，??=通配符。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WPE Filter Edit Page -->
+                <div id="page-wpe-edit" class="page">
+                    <div class="page-header">
+                        <button class="btn btn-ghost" onclick="backToWPEFilters()">&larr; 返回滤镜列表</button>
+                        <h2 id="wpeEditTitle">编辑滤镜</h2>
+                    </div>
+                    <div id="wpeEditContent"></div>
+                </div>
+
+                <!-- Logs Page (日志) -->
+                <div id="page-logs" class="page">
+                    <div class="page-title">
+                        <h1>日志</h1>
+                        <p class="page-subtitle" id="logsPageSubtitle">查看系统日志</p>
+                    </div>
+
+                    <div id="logsDisabledNotice" class="notice-area" style="display:none; margin-bottom:20px; border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08);">
+                        <h3 style="margin-bottom:8px; color: var(--warning);">日志记录当前已关闭</h3>
+                        <div style="font-size:13px; color: var(--text-secondary); line-height:1.7;">
+                            当前已开启极速模式，系统不会继续生成新的运行日志，所以登录成功后这里也可能一直显示为 0。
+                        </div>
+                        <div style="margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-warning" onclick="restoreLoggingFromLogsPage()">关闭极速模式并恢复日志</button>
+                            <span style="font-size:12px; color: var(--text-muted);">恢复后只能看到恢复之后产生的新日志。</span>
+                        </div>
+                    </div>
+
+                    <!-- 日志统计卡片 -->
+                    <div class="stats-grid" style="margin-bottom: 20px;">
+                        <div class="stat-card glass">
+                            <div class="stat-label">总日志数</div>
+                            <div class="stat-value" id="logStatTotal">0</div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="stat-label">错误</div>
+                            <div class="stat-value" style="color: var(--danger);" id="logStatError">0</div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="stat-label">警告</div>
+                            <div class="stat-value" style="color: var(--warning);" id="logStatWarning">0</div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="stat-label">信息</div>
+                            <div class="stat-value" style="color: var(--success);" id="logStatInfo">0</div>
+                        </div>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-body">
+                            <div class="toolbar" style="flex-wrap: wrap; gap: 12px;">
+                                <div class="form-group" style="margin-bottom:0; min-width:120px;">
+                                    <select id="logLevelFilter" class="input" onchange="filterLogs()">
+                                        <option value="all">全部级别</option>
+                                        <option value="ERROR">错误</option>
+                                        <option value="WARNING">警告</option>
+                                        <option value="INFO">信息</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0; min-width:150px;">
+                                    <select id="logCategoryFilter" class="input" onchange="filterLogs()">
+                                        <option value="all">全部分类</option>
+                                        <option value="全部日志">全部日志</option>
+                                        <option value="心跳加载">心跳加载</option>
+                                        <option value="心跳清理">心跳清理</option>
+                                        <option value="伪心跳替换">伪心跳替换</option>
+                                        <option value="登录验证">登录验证</option>
+                                        <option value="防CC">防CC</option>
+                                        <option value="采集日志">采集日志</option>
+                                        <option value="API日志">API日志</option>
+                                        <option value="SOCKS账号日志">SOCKS账号</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
+                                    <input type="text" id="logSearchText" class="input" placeholder="搜索日志内容..." oninput="scheduleFilterLogs()">
+                                </div>
+                                <button id="btnCopyLogs" class="btn btn-ghost" onclick="copyLogs()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                    复制
+                                </button>
+                                <button id="btnClearLogs" class="btn btn-ghost" onclick="clearLogs()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                    清空
+                                </button>
+                                <button id="btnRefreshLogs" class="btn btn-ghost" onclick="refreshLogs()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                    刷新
+                                </button>
+                                <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-secondary); white-space: nowrap;">
+                                    <input type="checkbox" id="logAutoScroll" checked>
+                                    自动滚动
+                                </label>
+                            </div>
+
+                            <!-- 表格化日志显示 -->
+                            <div class="log-table-container" style="margin-top: 16px;">
+                                <table class="log-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 160px;">时间</th>
+                                            <th style="width: 80px;">级别</th>
+                                            <th style="width: 120px;">分类</th>
+                                            <th>消息</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <div id="logList" class="log-table-body" style="max-height: 500px; overflow-y: auto;">
+                                    <table class="log-table">
+                                        <tbody id="logTableBody">
+                                            <tr>
+                                                <td colspan="4" class="empty-state">暂无日志</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instance Config Page (实例配置) -->
+                <div id="page-instance-config" class="page">
+                    <div class="page-header">
+                        <button class="btn btn-ghost" onclick="backToInstances()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                            返回实例列表
+                        </button>
+                    </div>
+                    <div class="page-title">
+                        <h1 id="configInstanceTitle">实例配置</h1>
+                        <p class="page-subtitle" id="configInstanceSubtitle">配置Socks转发实例</p>
+                    </div>
+
+                    <div class="config-layout">
+                        <!-- Left Menu -->
+                        <div class="config-menu card glass">
+                            <h3 style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">配置菜单</h3>
+                            <div class="menu-items">
+                                <div class="menu-item active" data-menu="basic" onclick="switchConfigMenu('basic')">基本信息</div>
+                                <div class="menu-item" data-menu="proxy" onclick="switchConfigMenu('proxy')">二级代理</div>
+                                <div class="menu-item" data-menu="thread" onclick="switchConfigMenu('thread')">线程模型</div>
+                                <div class="menu-item" data-menu="auth" onclick="switchConfigMenu('auth')">SOCKS5认证</div>
+                                <div class="menu-item" data-menu="packet" onclick="switchConfigMenu('packet')">分包处理</div>
+                                <div class="menu-item" data-menu="sslproxy" onclick="switchConfigMenu('sslproxy')">SSL代理</div>
+                                <div class="menu-item" data-menu="localmap" onclick="switchConfigMenu('localmap')">本地映射</div>
+                                <div class="menu-item" data-menu="traffic" onclick="switchConfigMenu('traffic')">流量过滤</div>
+                                <div class="menu-item" data-menu="disconnect" onclick="switchConfigMenu('disconnect')">断网规则</div>
+                                <div class="menu-item" data-menu="userfilter" onclick="switchConfigMenu('userfilter')">用户滤镜</div>
+                                <div class="menu-item" data-menu="accountfilter" onclick="switchConfigMenu('accountfilter')">账号滤镜</div>
+                            </div>
+                        </div>
+
+                        <!-- Right Content -->
+                        <div class="config-content card glass">
+                            <div id="configContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <!-- End Main App -->
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Confirm Dialog -->
+    <div id="confirmDialog" class="confirm-dialog-overlay" style="display:none;">
+        <div class="confirm-dialog glass">
+            <div class="confirm-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h3 id="confirmTitle">确认操作</h3>
+            <p id="confirmMessage">确定要执行此操作吗？</p>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmDialog()">取消</button>
+                <button class="btn btn-danger" id="confirmBtn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="modal-overlay" style="display:none;">
+        <div class="modal-card glass" id="modalCard">
+            <div class="modal-header">
+                <h3 id="modalTitle">标题</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+

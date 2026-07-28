@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="SocksWPE modern tech icon preview">
+  <defs>
+    <linearGradient id="bgTech" x1="72" y1="52" x2="438" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.45" stop-color="#0a1a2f"/>
+      <stop offset="1" stop-color="#081628"/>
+    </linearGradient>
+    <linearGradient id="strokeGlow" x1="96" y1="84" x2="416" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.55" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="textFill" x1="98" y1="120" x2="412" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dffcff"/>
+      <stop offset="0.45" stop-color="#9be7ff"/>
+      <stop offset="1" stop-color="#8ea2ff"/>
+    </linearGradient>
+    <filter id="outerGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 0.42 0"/>
+      <feBlend in="SourceGraphic" mode="screen"/>
+    </filter>
+    <pattern id="microGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke="rgba(120,180,255,0.06)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="sheen" x1="34" y1="30" x2="470" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="0.32" stop-color="rgba(255,255,255,0.04)"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="504" height="504" rx="124" fill="url(#bgTech)"/>
+  <rect x="4" y="4" width="504" height="504" rx="124" fill="url(#microGrid)"/>
+  <rect x="4" y="4" width="504" height="504" rx="124" fill="url(#sheen)"/>
+  <rect x="4" y="4" width="504" height="504" rx="124" fill="none" stroke="rgba(147, 197, 253, 0.16)" stroke-width="6"/>
+  <path d="M58 72H214" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" opacity="0.92"/>
+  <path d="M298 438H454" stroke="#818cf8" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="234" cy="72" r="8" fill="#5eead4"/>
+  <circle cx="278" cy="438" r="8" fill="#818cf8"/>
+  <path d="M40 110H472" stroke="rgba(148,205,255,0.10)" stroke-width="3"/>
+  <path d="M40 402H472" stroke="rgba(148,205,255,0.08)" stroke-width="3"/>
+
+  <g filter="url(#outerGlow)">
+    <g transform="translate(10 118) skewX(-10)">
+      <text x="0" y="110"
+            font-family="Bahnschrift SemiCondensed, Segoe UI Black, Arial Black, sans-serif"
+            font-size="314"
+            font-weight="900"
+            letter-spacing="-10"
+            fill="none"
+            stroke="url(#strokeGlow)"
+            stroke-width="14">WPE</text>
+      <text x="0" y="110"
+            font-family="Bahnschrift SemiCondensed, Segoe UI Black, Arial Black, sans-serif"
+            font-size="314"
+            font-weight="900"
+            letter-spacing="-10"
+            fill="url(#textFill)">WPE</text>
+    </g>
+  </g>
+
+  <path d="M52 456H164L208 412H306L350 368H458"
+        fill="none"
+        stroke="#5eead4"
+        stroke-width="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.95"/>
+</svg>

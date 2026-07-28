@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SocksWPE 现代科技风图标预览</title>
+  <style>
+    :root {
+      --bg: #050c18;
+      --panel: rgba(12, 20, 37, 0.92);
+      --line: rgba(126, 211, 255, 0.14);
+      --text: #e7f3ff;
+      --muted: #8ea3bf;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 36px;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.14), transparent 24%),
+        linear-gradient(180deg, #06101f 0%, #040916 100%);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      letter-spacing: 1px;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 860px;
+    }
+    .wrap {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 20px 52px rgba(0,0,0,0.34);
+    }
+    .preview-box {
+      border-radius: 22px;
+      padding: 28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+        #091324;
+      border: 1px solid rgba(126, 211, 255, 0.12);
+    }
+    .row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .sample {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      min-width: 80px;
+    }
+    img { display: block; }
+    .light-surface {
+      margin-top: 18px;
+      border-radius: 20px;
+      background: #f3f7fd;
+      padding: 22px;
+      border: 1px solid rgba(7,17,31,0.08);
+    }
+    .light-surface .sample { color: #5f718d; }
+    .taskbar {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      padding: 12px;
+    }
+    .taskbar img {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #9cecff;
+      border: 1px solid rgba(94,234,212,0.24);
+      background: rgba(94,234,212,0.08);
+    }
+  </style>
+</head>
+<body>
+  <h1>SocksWPE 现代科技风 v1</h1>
+  <p>这版直接按“网络工具 / 数据控制台 / 冷色霓虹”去做，保留 `SOCKS + WPE` 的字形识别，但把整体图标语言改成更锋利、更有科技面板感的样子。</p>
+
+  <div class="wrap">
+    <section class="panel">
+      <div class="preview-box">
+        <div class="row">
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="196" height="196" alt="196"><span>196px</span></div>
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="96" height="96" alt="96"><span>96px</span></div>
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="64" height="64" alt="64"><span>64px</span></div>
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="32" height="32" alt="32"><span>32px</span></div>
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="16" height="16" alt="16"><span>16px</span></div>
+        </div>
+        <div class="taskbar">
+          <img src="sockswpe_modern_tech_v1.svg" alt="taskbar">
+          <img src="sockswpe_modern_tech_v1.svg" alt="taskbar">
+          <img src="sockswpe_modern_tech_v1.svg" alt="taskbar">
+          <img src="sockswpe_modern_tech_v1.svg" alt="taskbar">
+        </div>
+      </div>
+
+      <div class="light-surface">
+        <div class="row">
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="96" height="96" alt="desktop"><span>桌面效果</span></div>
+          <div class="sample"><img src="sockswpe_modern_tech_v1.svg" width="48" height="48" alt="small"><span>小尺寸</span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>设计关键词</h2>
+      <ul>
+        <li>深色底，偏系统工具和现代控制台气质</li>
+        <li>`SOCKS` 作为辅助标识，`WPE` 作为主识别字形</li>
+        <li>外框与折线做“数据链路 / 网络包”暗示</li>
+        <li>整体更适合任务栏，不会太像普通办公软件图标</li>
+      </ul>
+      <div class="badge">方向：现代科技风 / 冷色霓虹 / 数据工具</div>
+    </aside>
+  </div>
+</body>
+</html>

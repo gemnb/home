@@ -1,0 +1,7 @@
+#include "web_resource.h"
+
+// Embed HTML/CSS/JS files as binary resources
+// Frontend resource bundle version: 2026-03-31-proxydata-debug
+IDR_HTML_INDEX  RCDATA  "web\\index.html"
+IDR_CSS_STYLE   RCDATA  "web\\style.css"
+IDR_JS_APP      RCDATA  "web\\app.js"

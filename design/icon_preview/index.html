@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SocksWPE 图标预览</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2d;
+      --panel-2: #f3f6fb;
+      --text: #e6edf8;
+      --muted: #8ea0bf;
+      --line: rgba(255,255,255,0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.12), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(167,139,250,0.10), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: rgba(18, 26, 45, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .card .desc {
+      margin-bottom: 18px;
+      min-height: 44px;
+      font-size: 13px;
+    }
+    .surface-dark, .surface-light {
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 14px;
+    }
+    .surface-dark {
+      background: #0b1327;
+    }
+    .surface-light {
+      background: var(--panel-2);
+      border-color: rgba(8,15,35,0.08);
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .size {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 72px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .surface-light .size {
+      color: #5c6d88;
+    }
+    img {
+      display: block;
+      border-radius: 16px;
+    }
+    .taskbar {
+      display: flex;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      margin-top: 14px;
+    }
+    .taskbar img {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>SocksWPE 图标预览稿</h1>
+  <p>下面是 3 个仅用于预览的方向稿，核心都基于 `SocksWPE` 字体拆分来做。你确认方向后，我再把选中的方案制作成正式 `.ico` 并替换到程序资源里。</p>
+
+  <div class="grid">
+    <section class="card">
+      <h2>A 版：稳重商务</h2>
+      <p class="desc">`SOCKS` 小标题 + `WPE` 大字主视觉，适合任务栏和桌面都保持清晰。</p>
+      <div class="surface-dark">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_a.svg" width="128" height="128" alt="A 128"><span>128px</span></div>
+          <div class="size"><img src="sockswpe_preview_a.svg" width="64" height="64" alt="A 64"><span>64px</span></div>
+          <div class="size"><img src="sockswpe_preview_a.svg" width="32" height="32" alt="A 32"><span>32px</span></div>
+          <div class="size"><img src="sockswpe_preview_a.svg" width="16" height="16" alt="A 16"><span>16px</span></div>
+        </div>
+        <div class="taskbar">
+          <img src="sockswpe_preview_a.svg" alt="A taskbar 1">
+          <img src="sockswpe_preview_a.svg" alt="A taskbar 2">
+          <img src="sockswpe_preview_a.svg" alt="A taskbar 3">
+        </div>
+      </div>
+      <div class="surface-light">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_a.svg" width="72" height="72" alt="A light"><span>桌面</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>B 版：科技面板</h2>
+      <p class="desc">更像工具软件和控制台，`Socks` 更突出，整体更规则。</p>
+      <div class="surface-dark">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_b.svg" width="128" height="128" alt="B 128"><span>128px</span></div>
+          <div class="size"><img src="sockswpe_preview_b.svg" width="64" height="64" alt="B 64"><span>64px</span></div>
+          <div class="size"><img src="sockswpe_preview_b.svg" width="32" height="32" alt="B 32"><span>32px</span></div>
+          <div class="size"><img src="sockswpe_preview_b.svg" width="16" height="16" alt="B 16"><span>16px</span></div>
+        </div>
+        <div class="taskbar">
+          <img src="sockswpe_preview_b.svg" alt="B taskbar 1">
+          <img src="sockswpe_preview_b.svg" alt="B taskbar 2">
+          <img src="sockswpe_preview_b.svg" alt="B taskbar 3">
+        </div>
+      </div>
+      <div class="surface-light">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_b.svg" width="72" height="72" alt="B light"><span>桌面</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>C 版：字母感更强</h2>
+      <p class="desc">保留 `Socks` 标识，但主体是更强的 `WPE` 字母节奏，识别性最高。</p>
+      <div class="surface-dark">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_c.svg" width="128" height="128" alt="C 128"><span>128px</span></div>
+          <div class="size"><img src="sockswpe_preview_c.svg" width="64" height="64" alt="C 64"><span>64px</span></div>
+          <div class="size"><img src="sockswpe_preview_c.svg" width="32" height="32" alt="C 32"><span>32px</span></div>
+          <div class="size"><img src="sockswpe_preview_c.svg" width="16" height="16" alt="C 16"><span>16px</span></div>
+        </div>
+        <div class="taskbar">
+          <img src="sockswpe_preview_c.svg" alt="C taskbar 1">
+          <img src="sockswpe_preview_c.svg" alt="C taskbar 2">
+          <img src="sockswpe_preview_c.svg" alt="C taskbar 3">
+        </div>
+      </div>
+      <div class="surface-light">
+        <div class="row">
+          <div class="size"><img src="sockswpe_preview_c.svg" width="72" height="72" alt="C light"><span>桌面</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

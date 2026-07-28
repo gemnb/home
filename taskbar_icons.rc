@@ -1,0 +1,4 @@
+#include "resource.h"
+
+IDI_TASKBAR       ICON         "taskbar.ico"
+IDI_TASKBAR_SMALL ICON         "taskbar_small.ico"

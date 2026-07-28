@@ -1,0 +1,54 @@
+# ============ Visual Studio 编译产物 / IDE 缓存 ============
+.vs/
+x64/
+Win32/
+Debug/
+Release/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.exp
+*.lib
+*.exe
+*.dll
+*.tlog
+*.log
+*.lastbuildstate
+*.unsuccessfulbuild
+*.pch
+*.ipch
+*.aps
+*.res
+
+# ============ 纯编译输出子目录 ============
+SocksWPE/
+新伪心跳/
+
+# ============ NuGet 依赖包(可还原) ============
+packages/
+
+# ============ 备份 / 临时文件 ============
+*.bak
+*.backup
+*.tmp
+.tmp_*
+*~
+
+# ============ 运行时数据库 ============
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# ============ 用户/机器相关工程文件 ============
+*.vcxproj.user
+*.suo
+*.user
+
+# ============ MITM 导出证书(运行时生成) ============
+*.cer
+
+# ============ 系统文件 ============
+Thumbs.db
+Desktop.ini

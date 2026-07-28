@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="SocksWPE icon preview C">
+  <defs>
+    <linearGradient id="bgC" x1="96" y1="48" x2="416" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.5" stop-color="#1e1b4b"/>
+      <stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="accentC" x1="132" y1="120" x2="382" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="0.5" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="url(#bgC)"/>
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="none" stroke="rgba(255,255,255,0.12)"/>
+  <circle cx="392" cy="120" r="34" fill="rgba(147,197,253,0.12)"/>
+  <circle cx="126" cy="386" r="22" fill="rgba(167,139,250,0.14)"/>
+  <text x="118" y="194" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="2" fill="#e0ecff">Socks</text>
+  <text x="110" y="318" font-family="Segoe UI Black, Bahnschrift, Arial Black, sans-serif" font-size="166" font-weight="900" letter-spacing="2" fill="url(#accentC)">W</text>
+  <text x="258" y="318" font-family="Segoe UI Black, Bahnschrift, Arial Black, sans-serif" font-size="166" font-weight="900" letter-spacing="2" fill="url(#accentC)">P</text>
+  <text x="349" y="318" font-family="Segoe UI Black, Bahnschrift, Arial Black, sans-serif" font-size="166" font-weight="900" letter-spacing="2" fill="url(#accentC)">E</text>
+  <rect x="120" y="350" width="272" height="10" rx="5" fill="rgba(255,255,255,0.12)"/>
+  <rect x="120" y="350" width="132" height="10" rx="5" fill="#93c5fd"/>
+</svg>

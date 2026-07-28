@@ -1,0 +1,8 @@
+{
+    "thinkphp_notify": {
+        "enabled": true,
+        "url": "http://your-thinkphp-server.com",
+        "api_key": "your_secret_key_here",
+        "timeout_ms": 5000
+    }
+}

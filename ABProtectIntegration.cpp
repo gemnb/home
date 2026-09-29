@@ -9,6 +9,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#include <wincrypt.h>
 #include <winhttp.h>
 #include <atomic>
 #include <mutex>
@@ -19,6 +20,7 @@
 #include <ctime>
 
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "crypt32.lib")
 #pragma comment(lib, "winhttp.lib")
 
 namespace ABProtectLayer {

@@ -1,4 +1,5 @@
 ﻿#include "WPEFilter.h"
+#include "CloudIntegration.h"
 #include "DatabaseManager.h"
 #include "Logger.h"
 #include <fstream>

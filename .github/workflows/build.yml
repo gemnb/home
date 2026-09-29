@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - name: Build Release x64
+        shell: pwsh
+        run: |
+          $sln = Get-ChildItem -Filter *.sln | Select-Object -First 1
+          msbuild $sln.FullName /p:Configuration=Release /p:Platform=x64 /m /v:minimal
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SocksWPE-x64-Release
+          path: x64/Release/SocksWPE.exe

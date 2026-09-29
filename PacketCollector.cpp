@@ -3,8 +3,6 @@
 #include "GlobalAntiCCCoordinator.h"
 #include "ui_bridge.h"
 #include "WPEFilterIntegration.h"
-#include "ABProtectSDK.h"
-#include "ABProtectIntegration.h"
 #include "UserFilterManager.h"
 #include "res/json.hpp"
 #include <ws2tcpip.h>
@@ -457,13 +455,6 @@ PacketCollector::~PacketCollector() {
 }
 
 bool PacketCollector::Start() {
-    ABPROTECT_CHECK_DEBUGGER;
-    if (!ABProtectLayer::IsLoggedIn()) {
-        SetLastErrorMessage_("未登录，无法启动采集器");
-        return false;
-    }
-    ABProtectLayer::CheckPoint_Network();
-
     if (isRunning) {
         Log("[警告] 采集器已在运行");
         SetLastErrorMessage_("采集器已在运行");
@@ -1449,12 +1440,6 @@ SOCKET PacketCollector::ConnectToTarget(const std::string& host, int port) {
 
 
 void PacketCollector::HandleClient(SOCKET clientSocket, const std::string& clientAddr) {
-    ABPROTECT_CHECK_DEBUGGER;
-    if (!ABProtectLayer::IsLoggedIn()) {
-        closesocket(clientSocket);
-        return;
-    }
-
     std::string targetHost;
     int targetPort;
     std::string authenticatedUser;
@@ -1898,7 +1883,6 @@ bool PacketCollector::TryHandleHttpLocalMapRequest(const std::shared_ptr<ProxyCo
 
 
 void PacketCollector::ForwardClientToServer(std::shared_ptr<ProxyConnection> conn) {
-    ABPROTECT_ENCRYPT_BEGIN;
     char recvBuffer[8192];
 
     // ===== 🔥 优化：SNI嗅探标志（只在第一个数据包时尝试）=====
@@ -2178,7 +2162,6 @@ void PacketCollector::ForwardClientToServer(std::shared_ptr<ProxyConnection> con
 
         if (!conn->isActive) break;
     }
-    ABPROTECT_ENCRYPT_END;
 }
 
 
@@ -2187,7 +2170,6 @@ void PacketCollector::ForwardClientToServer(std::shared_ptr<ProxyConnection> con
 
 
 void PacketCollector::ForwardServerToClient(std::shared_ptr<ProxyConnection> conn) {
-    ABPROTECT_ENCRYPT_BEGIN;
     char recvBuffer[8192];
 
     while (conn->isActive && isRunning) {
@@ -2326,7 +2308,6 @@ void PacketCollector::ForwardServerToClient(std::shared_ptr<ProxyConnection> con
             break;
         }
     }
-    ABPROTECT_ENCRYPT_END;
 }
 
 
@@ -2340,8 +2321,6 @@ std::vector<std::vector<uint8_t>> PacketCollector::ProcessBuffer(
     const std::vector<uint8_t>& newData,
     bool bypassModifier)
 {
-    ABPROTECT_VM_BEGIN;
-    ABPROTECT_CHECK_DEBUGGER;
     std::vector<std::vector<uint8_t>> completePackets;
     std::vector<CallbackTask> tasksToEnqueue;
 

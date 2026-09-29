@@ -1,5 +1,4 @@
 ﻿#include "WPEFilter.h"
-#include "CloudIntegration.h"
 #include "DatabaseManager.h"
 #include "Logger.h"
 #include <fstream>
@@ -228,45 +227,6 @@ namespace WPEFilter {
     // ==================== FilterManager 瀹炵幇 ====================
 
     int FilterManager::AddFilter(const FilterInfo& filter) {
-        if (!CloudIntegration::IsLoggedIn()) {
-            AB_LOG_ERROR("[WPE] AddFilter denied: not logged in");
-            return -1;
-        }
-        {
-            std::string denyReason;
-            if (!CloudIntegration::Checkpoint(3110, "{\"op\":\"WPE.AddFilter\"}", denyReason)) {
-                AB_LOG_ERROR("[WPE] AddFilter denied: " + denyReason);
-                return -1;
-            }
-        }
-
-        std::lock_guard<std::mutex> lock(m_mutex);
-
-        FilterInfo newFilter = filter;
-        newFilter.id = m_nextId++;
-        newFilter.executionCount = 0;
-
-        m_filters.push_back(newFilter);
-
-        // 馃敟 璁板綍鎴愬姛娣诲姞
-        AB_LOG_INFO("[WPE婊ら暅] 娣诲姞婊ら暅鎴愬姛: " + newFilter.name + " (ID: " + std::to_string(newFilter.id) + ")");
-
-        return newFilter.id;
-    }
-
-    bool FilterManager::UpdateFilter(int id, const FilterInfo& filter) {
-        if (!CloudIntegration::IsLoggedIn()) {
-            AB_LOG_ERROR("[WPE] UpdateFilter denied: not logged in");
-            return false;
-        }
-        {
-            std::string denyReason;
-            std::string contextJson = std::string("{\"op\":\"WPE.UpdateFilter\",\"id\":") + std::to_string(id) + "}";
-            if (!CloudIntegration::Checkpoint(3111, contextJson, denyReason)) {
-                AB_LOG_ERROR("[WPE] UpdateFilter denied: " + denyReason);
-                return false;
-            }
-        }
 
         std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -302,18 +262,6 @@ namespace WPEFilter {
     }
 
     bool FilterManager::RemoveFilter(int id) {
-        if (!CloudIntegration::IsLoggedIn()) {
-            AB_LOG_ERROR("[WPE] RemoveFilter denied: not logged in");
-            return false;
-        }
-        {
-            std::string denyReason;
-            std::string contextJson = std::string("{\"op\":\"WPE.RemoveFilter\",\"id\":") + std::to_string(id) + "}";
-            if (!CloudIntegration::Checkpoint(3112, contextJson, denyReason)) {
-                AB_LOG_ERROR("[WPE] RemoveFilter denied: " + denyReason);
-                return false;
-            }
-        }
 
         std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -331,18 +279,6 @@ namespace WPEFilter {
     }
 
     bool FilterManager::EnableFilter(int id, bool enable) {
-        if (!CloudIntegration::IsLoggedIn()) {
-            return false;
-        }
-        {
-            std::string denyReason;
-            std::string contextJson = std::string("{\"op\":\"WPE.EnableFilter\",\"id\":") + std::to_string(id) +
-                ",\"enable\":" + (enable ? "true" : "false") + "}";
-            if (!CloudIntegration::Checkpoint(3113, contextJson, denyReason)) {
-                return false;
-            }
-        }
-
         std::lock_guard<std::mutex> lock(m_mutex);
 
         for (auto& f : m_filters) {

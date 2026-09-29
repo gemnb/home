@@ -16,7 +16,6 @@
 #include "DatabaseManager.h"
 #include "UserFilterManager.h"
 #include "TinyAES.h"
-#include "ABProtectIntegration.h"
 #include "RemoteBrowserServer.h"
 #include "DisconnectRuleTypes.h"
 #include "res/json.hpp"
@@ -1164,7 +1163,7 @@ static void UIBridge_RequestImmediateWpeCloudSync(const char* reason) {
 void UIBridge_PushStatus(bool force) {
     json msg;
     msg["type"] = "status";
-    msg["loggedIn"] = g_isLoggedIn;
+    msg["loggedIn"] = true;
     msg["username"] = g_cloudUsername;
     msg["loginType"] = "";
     msg["expireTime"] = g_expireTime;
@@ -1229,38 +1228,6 @@ void UIBridge_PushInstances(bool force) {
     UIBridge_PushMessage(msg.dump());
 }
 
-static bool __declspec(noinline) ValidateLoginInputsLocal(
-    const std::string& loginType,
-    const std::string& username,
-    const std::string& password,
-    std::string& outMessage) {
-
-    bool ok = true;
-    outMessage.clear();
-    if (loginType == "card") {
-        if (username.empty()) {
-            outMessage = "请输入卡密";
-            ok = false;
-        }
-    } else {
-        if (username.empty() || password.empty()) {
-            outMessage = "请输入账号和密码";
-            ok = false;
-        }
-    }
-
-    return ok;
-}
-
-static void __declspec(noinline) ApplyLoginCredentialsLocal(
-    const std::string& username,
-    const std::string& password) {
-
-    g_cloudUsername = username;
-
-}
-
-
 // Handle incoming messages from frontend
 void UIBridge_HandleMessage(const char* jsonMessage) {
     try {
@@ -1280,90 +1247,30 @@ void UIBridge_HandleMessage(const char* jsonMessage) {
 
         // ========== Cloud Login/Logout ==========
         if (action == "cloud_login" || action == "trial_login") {
+            // 云验证与卡密授权已移除：本地模式直接视为已登录
             const bool isTrialLogin = (action == "trial_login");
             const std::string loginType = msg.value("loginType", "account");
             const bool isCardLogin = (!isTrialLogin && loginType == "card");
             std::string username = isCardLogin ? msg.value("card", "") : msg.value("username", "");
-            std::string password = isCardLogin ? std::string() : msg.value("password", "");
-            const bool rememberPassword = msg.value("rememberPassword", false);
-            const bool autoLogin = msg.value("autoLogin", false);
-            const std::string loginSource = msg.value("loginSource", isTrialLogin ? "trial" : "manual");
-            if (!isTrialLogin) {
-                AB_LOG_INFO_CAT(
-                    LOG_CAT_LOGIN_AUTH,
-                    "[登录] 收到" + std::string(loginSource == "auto" ? "自动" : "手动") +
-                    std::string(isCardLogin ? "卡密" : "账号") +
-                    "登录请求: identityLen=" + std::to_string(username.size()) +
-                    ", passwordLen=" + std::to_string(password.size()) +
-                    ", remember=" + std::string(rememberPassword ? "1" : "0") +
-                    ", autoLogin=" + std::string(autoLogin ? "1" : "0"));
+            if (username.empty()) {
+                username = "local";
             }
 
-            if (!isTrialLogin) {
-                std::string validationMsg;
-                if (!ValidateLoginInputsLocal(isCardLogin ? "card" : "account", username, password, validationMsg)) {
-                    json response;
-                    response["type"] = "cloud_login_result";
-                    response["success"] = false;
-                    response["isTrial"] = false;
-                    response["loginType"] = isCardLogin ? "card" : "account";
-                    response["error"] = validationMsg;
-                    UIBridge_PushMessage(response.dump());
-                    return;
-                }
+            g_isLoggedIn = true;
+            g_cloudUsername = username;
+            g_expireTime.clear();
+            g_remainingDays = 0;
 
-                ApplyLoginCredentialsLocal(username, password);
-            }
-
-            std::string capturedUsername = username;
-            std::string capturedPassword = password;
-            bool capturedIsCard = isCardLogin;
-            std::string capturedLoginType = isCardLogin ? "card" : "account";
-            bool capturedRemember = rememberPassword;
-            bool capturedAutoLogin = autoLogin;
-
-            std::thread([capturedUsername, capturedPassword, capturedIsCard,
-                         capturedLoginType, capturedRemember, capturedAutoLogin]() {
-                ABProtectLayer::LoginResult lr;
-                if (capturedIsCard) {
-                    lr = ABProtectLayer::CardLogin(capturedUsername);
-                } else {
-                    lr = ABProtectLayer::Login(capturedUsername, capturedPassword);
-                }
-
-                json response;
-                response["type"] = "cloud_login_result";
-                response["success"] = lr.success;
-                response["loginType"] = capturedLoginType;
-                response["isTrial"] = false;
-                if (lr.success) {
-                    g_isLoggedIn = true;
-                    g_cloudUsername = lr.username.empty() ? capturedUsername : lr.username;
-                    g_expireTime = lr.expireTime;
-                    g_remainingDays = lr.remainingDays;
-
-                    if (capturedIsCard && g_database) {
-                        std::vector<int> inheritedGroups = g_database->LoadCardWPEFilterGroups(capturedUsername);
-                        if (!inheritedGroups.empty()) {
-                            (void)g_database->SaveUserWPEFilterGroups("", g_cloudUsername, inheritedGroups);
-                            if (g_userFilterManager) {
-                                (void)g_userFilterManager->UpdateUserFilterGroups("", g_cloudUsername, inheritedGroups);
-                            }
-                        }
-                    }
-
-                    response["username"] = g_cloudUsername;
-                    response["expireTime"] = lr.expireTime;
-                    response["remainingDays"] = lr.remainingDays;
-                } else {
-                    response["error"] = lr.errorMsg.empty() ? "登录失败" : lr.errorMsg;
-                }
-                UIBridge_PushMessage(response.dump());
-
-                if (lr.success) {
-                    UIBridge_PushStatus(true);
-                }
-            }).detach();
+            json response;
+            response["type"] = "cloud_login_result";
+            response["success"] = true;
+            response["loginType"] = isCardLogin ? "card" : "account";
+            response["isTrial"] = isTrialLogin;
+            response["username"] = username;
+            response["expireTime"] = "";
+            response["remainingDays"] = 0;
+            UIBridge_PushMessage(response.dump());
+            UIBridge_PushStatus(true);
 
         }
         else if (action == "ui_sync_state") {

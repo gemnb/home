@@ -1,7 +1,6 @@
 ﻿#include "PoolCleanupServer.h"
 #include "Logger.h"
 #include <sstream>
-#include "CloudIntegration.h"
 #include <vector>
 
 PoolCleanupServer::PoolCleanupServer(int port)
@@ -16,15 +15,6 @@ bool PoolCleanupServer::Start() {
     if (isRunning) {
         AB_LOG_WARNING("[PoolCleanup] Server already running");
         return false;
-    }
-
-    if (CloudIntegration::IsLoggedIn()) {
-        std::string denyReason;
-        std::string contextJson = std::string("{\"op\":\"PoolCleanupServer.Start\",\"port\":") + std::to_string(port) + "}";
-        if (!CloudIntegration::Checkpoint(3144, contextJson, denyReason)) {
-            AB_LOG_ERROR("[云计算] PoolCleanupServer.Start被Checkpoint拒绝: " + denyReason);
-            return false;
-        }
     }
 
     WSADATA wsaData;
@@ -111,15 +101,6 @@ void PoolCleanupServer::ServerLoop() {
 }
 
 void PoolCleanupServer::HandleClient(SOCKET clientSocket, const std::string& clientIP) {
-    if (CloudIntegration::IsLoggedIn()) {
-        std::string denyReason;
-        if (!CloudIntegration::Checkpoint(3145, "{\"op\":\"PoolCleanupServer.HandleClient\"}", denyReason)) {
-            AB_LOG_ERROR("[云计算] PoolCleanupServer.HandleClient被Checkpoint拒绝: " + denyReason);
-            closesocket(clientSocket);
-            return;
-        }
-    }
-
     char buffer[4096];
     int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
 

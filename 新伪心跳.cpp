@@ -78,9 +78,6 @@
 #include "InstanceManager.h"  // 实例管理
 #include "AbStandaloneApi.h"
 #include "AbInstanceInterop.h"
-#include "CloudIntegration.h"
-#include "ABProtectIntegration.h"
-#include "ABProtectSDK.h"
 
 
 #pragma comment(lib, "wbemuuid.lib")
@@ -26289,10 +26286,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     WriteLog("========================================");
 
     try {
-        // ABProtect 初始化 + 反调试检测
-        ABPROTECT_CHECK_DEBUGGER;
-        ABProtectLayer::Init();
-        ABProtectLayer::CheckPoint_Main();
 
         // SProtect 水印自检：已禁用
         // SProtectSelfCheck::InstallCrashLogger();

@@ -960,9 +960,10 @@ const btnRemoteModeApply = $('btnRemoteModeApply');
 const btnCopyRemoteUrl = $('btnCopyRemoteUrl');
 
 function setCloudLoginButtonsLoading(loading, trialLoading = false) {
-    btnLoginSubmit.disabled = loading;
+    if (btnLoginSubmit) btnLoginSubmit.disabled = loading;
     if (btnTrialLoginSubmit) btnTrialLoginSubmit.disabled = loading;
-    $('loginBtnText').textContent = loading ? '登录中...' : '登录';
+    const loginBtnText = $('loginBtnText');
+    if (loginBtnText) loginBtnText.textContent = loading ? '登录中...' : '登录';
     const trialText = $('trialLoginBtnText');
     if (trialText) {
         trialText.textContent = trialLoading ? '试用登录中...' : '试用登录';
@@ -1047,6 +1048,7 @@ function scheduleApplyLoginPreferencesToForm() {
 }
 
 function tryAutoLoginFromStoredPrefs() {
+    return;
     if (window.__autoLoginAttempted || window.__currentCloudLoggedIn) {
         return;
     }
@@ -1271,10 +1273,7 @@ function setLoginScreenState(active) {
 function showLoginScreen() {
     setLogsRealtimeEnabled(false);
     closeMobileNav();
-    setLoginScreenState(true);
-    applyLoginPreferencesToForm();
-    scheduleApplyLoginPreferencesToForm();
-    tryAutoLoginFromStoredPrefs();
+    setLoginScreenState(false);
 }
 
 // Show main app, hide login screen
@@ -1285,7 +1284,7 @@ function showMainApp() {
     }
 }
 
-setLoginScreenState(true);
+setLoginScreenState(false);
 initMobileNav();
 
 function getRemoteBrowserElement(prefix, suffix) {
@@ -1573,7 +1572,9 @@ function restoreLoggingFromLogsPage() {
 }
 
 // Recharge button
-$('btnRecharge').addEventListener('click', () => {
+const btnRecharge = $('btnRecharge');
+if (btnRecharge) {
+    btnRecharge.addEventListener('click', () => {
     const cards = $('rechargeCards').value.trim();
     const messageArea = $('rechargeMessage');
 
@@ -1592,7 +1593,8 @@ $('btnRecharge').addEventListener('click', () => {
     messageArea.style.display = 'none';
 
     postAction('home_recharge', { cards });
-});
+    });
+}
 
 // ========== Instances Page (实例管理) ==========
 $('btnCreateInstance').addEventListener('click', () => {
@@ -7825,12 +7827,6 @@ function saveAccountWpeFilterGroups(username) {
 // Initialize titlebar drag
 initTitlebarDrag();
 
-// Initialize login tabs
-initLoginTabs();
-
-// Initialize register and renew
-initRegister();
-initRenew();
 setTimeout(() => {
     initRemoteBrowserClientUi();
     pollRemoteBrowserMessages();

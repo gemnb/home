@@ -1,5 +1,4 @@
-#include "DisconnectRuleEngine.h"
-#include "ABProtectSDK.h"
+﻿#include "DisconnectRuleEngine.h"
 
 #include <algorithm>
 
@@ -42,8 +41,6 @@ DisconnectFeedResult DisconnectRuleEngine::FeedData(
     DisconnectRuntimeState& state,
     const std::vector<uint8_t>& data,
     DisconnectDirection direction) {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_DEBUGGER;
     DisconnectFeedResult result;
 
     const DisconnectRule* matchedRule = FindMatchingRule(rules, targetPort);
@@ -107,7 +104,6 @@ DisconnectFeedResult DisconnectRuleEngine::FeedData(
         ClearHexBuffers(state);
     }
 
-    ABPROTECT_CFF_END;
     return result;
 }
 

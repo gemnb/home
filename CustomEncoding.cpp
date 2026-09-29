@@ -1,6 +1,5 @@
 ﻿#include "CustomEncoding.h"
 #include "TinyAES.h"
-#include "ABProtectSDK.h"
 #include <algorithm>
 #include <sstream>
 
@@ -111,7 +110,6 @@ std::string EncodeSecure(const std::string& plaintext,
                          const uint8_t* aesKey,
                          const uint8_t* aesIv,
                          uint64_t timestamp) {
-    ABPROTECT_SUBLEQ_BEGIN;
     // 1. 准备数据（PKCS7填充）
     std::vector<uint8_t> data(plaintext.begin(), plaintext.end());
     size_t paddedLen = ((data.size() + 15) / 16) * 16 + 16;  // 预留填充空间
@@ -133,7 +131,6 @@ std::string EncodeSecure(const std::string& plaintext,
     XorObfuscate(data, timestamp);
 
     // 5. 自定义Base64编码
-    ABPROTECT_SUBLEQ_END;
     return CustomBase64Encode(data);
 }
 
@@ -141,7 +138,6 @@ std::string DecodeSecure(const std::string& encoded,
                          const uint8_t* aesKey,
                          const uint8_t* aesIv,
                          uint64_t timestamp) {
-    ABPROTECT_SUBLEQ_BEGIN;
     // 1. 自定义Base64解码
     std::vector<uint8_t> data = CustomBase64Decode(encoded);
     if (data.empty()) return "";
@@ -161,7 +157,6 @@ std::string DecodeSecure(const std::string& encoded,
     size_t plainLen = TinyAES::PKCS7_Unpad(data.data(), data.size());
     if (plainLen == 0) return "";  // 去填充失败
 
-    ABPROTECT_SUBLEQ_END;
     return std::string(data.begin(), data.begin() + plainLen);
 }
 

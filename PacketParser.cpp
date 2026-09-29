@@ -1,5 +1,4 @@
 ﻿#include "PacketParser.h"
-#include "ABProtectSDK.h"
 #include <sstream>
 #include <iomanip>
 #include <chrono>
@@ -65,8 +64,6 @@ int PacketParser::FindPattern(const std::vector<uint8_t>& data,
 }
 
 std::string PacketParser::ExtractGameID(const std::vector<uint8_t>& data) {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_INTEGRITY;
     // 查找 01 0a 00 23 特征码
     std::vector<uint8_t> pattern = { 0x01, 0x0a, 0x00, 0x23 };
     int pos = FindPattern(data, pattern);
@@ -96,7 +93,6 @@ std::string PacketParser::ExtractGameID(const std::vector<uint8_t>& data) {
     }
 
     // 转换为字符串（假设是ASCII）
-    ABPROTECT_CFF_END;
     return std::string(gameIDBytes.begin(), gameIDBytes.end());
 }
 

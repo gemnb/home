@@ -193,9 +193,6 @@
     <ClInclude Include="ui_bridge.h" />
     <ClInclude Include="web_resource.h" />
     <ClInclude Include="新伪心跳.h" />
-    <ClInclude Include="ABProtectSDK.h" />
-    <ClInclude Include="ABProtectIntegration.h" />
-    <ClInclude Include="CloudIntegration.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AntiCC.cpp" />
@@ -237,8 +234,6 @@
     <ClCompile Include="webview2_host.cpp" />
     <ClCompile Include="ui_bridge.cpp" />
     <ClCompile Include="新伪心跳.cpp" />
-    <ClCompile Include="ABProtectIntegration.cpp" />
-    <ClCompile Include="CloudIntegration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="新伪心跳.rc" />

@@ -1,10 +1,8 @@
-// HeartbeatCore.cpp
+﻿// HeartbeatCore.cpp
 // 伪心跳核心算法实现
 
 #include "HeartbeatCore.h"
 #include "Logger.h"
-#include "ABProtectSDK.h"
-#include "ABProtectIntegration.h"
 #include <json/json.h>
 #include <fstream>
 #include <random>
@@ -86,12 +84,10 @@ void HeartbeatCore::SetDatabase(DatabaseManager* db) {
 
 // ==================== CRC32计算 ====================
 uint32_t HeartbeatCore::CalculateCRC32(const uint8_t* data, size_t length) {
-    ABPROTECT_ENCRYPT_BEGIN;
     uint32_t crc = 0xFFFFFFFF;
     for (size_t i = 0; i < length; i++) {
         crc = s_crc32Table[(crc ^ data[i]) & 0xFF] ^ (crc >> 8);
     }
-    ABPROTECT_ENCRYPT_END;
     return crc ^ 0xFFFFFFFF;
 }
 
@@ -215,9 +211,7 @@ bool HeartbeatCore::MatchPattern(const std::vector<uint8_t>& data, const std::st
 
 // ==================== 白名单/黑名单检查 ====================
 bool HeartbeatCore::CheckWhitelist(const std::vector<uint8_t>& data, int* matchedIndex, std::string* matchedRuleName) {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_INTEGRITY;
-    if (!m_enableWhitelist) { ABPROTECT_CFF_END; return true; }
+    if (!m_enableWhitelist) { return true; }
 
     std::lock_guard<std::mutex> lock(m_whitelistMutex);
 
@@ -229,19 +223,15 @@ bool HeartbeatCore::CheckWhitelist(const std::vector<uint8_t>& data, int* matche
             rule.matchCount++;
             if (matchedIndex) *matchedIndex = static_cast<int>(i);
             if (matchedRuleName) *matchedRuleName = rule.name;
-            ABPROTECT_CFF_END;
             return true;
         }
     }
 
-    ABPROTECT_CFF_END;
     return false;
 }
 
 bool HeartbeatCore::CheckBlacklist(const std::vector<uint8_t>& data, int* matchedIndex, std::string* matchedRuleName) {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_INTEGRITY;
-    if (!m_enableBlacklist) { ABPROTECT_CFF_END; return false; }
+    if (!m_enableBlacklist) { return false; }
 
     std::lock_guard<std::mutex> lock(m_blacklistMutex);
 
@@ -253,12 +243,10 @@ bool HeartbeatCore::CheckBlacklist(const std::vector<uint8_t>& data, int* matche
             rule.matchCount++;
             if (matchedIndex) *matchedIndex = static_cast<int>(i);
             if (matchedRuleName) *matchedRuleName = rule.name;
-            ABPROTECT_CFF_END;
             return true;
         }
     }
 
-    ABPROTECT_CFF_END;
     return false;
 }
 
@@ -278,7 +266,6 @@ HBCore::ReplaceCountRule* HeartbeatCore::GetFirstEnabledReplaceRule() {
 }
 
 bool HeartbeatCore::ShouldAttemptReplace(const std::string& key, const std::string& gameID, const std::string& username) {
-    ABPROTECT_VM_BEGIN;
     HBCore::ReplaceCountRule* rule = GetFirstEnabledReplaceRule();
     if (!rule) return true; // 没有规则，允许替换
 
@@ -309,7 +296,6 @@ bool HeartbeatCore::ShouldAttemptReplace(const std::string& key, const std::stri
     }
 
     state.cycleRemaining--;
-    ABPROTECT_VM_END;
     return state.cycleSendFake;
 }
 
@@ -382,8 +368,7 @@ HeartbeatRecord HeartbeatCore::GetRandomHeartbeatDataByLength(int length) {
 }
 
 HeartbeatRecord HeartbeatCore::GetSequentialHeartbeatData(const std::string& gameID, int length, bool isStaticMode) {
-    ABPROTECT_CFF_BEGIN;
-    if (!m_database) { ABPROTECT_CFF_END; return HeartbeatRecord(); }
+    if (!m_database) { return HeartbeatRecord(); }
 
     auto records = m_database->GetHeartbeatsFromId(0, 5000);
     std::vector<HeartbeatRecord> filtered;
@@ -394,7 +379,7 @@ HeartbeatRecord HeartbeatCore::GetSequentialHeartbeatData(const std::string& gam
         }
     }
 
-    if (filtered.empty()) { ABPROTECT_CFF_END; return HeartbeatRecord(); }
+    if (filtered.empty()) { return HeartbeatRecord(); }
 
     std::lock_guard<std::mutex> lock(m_sequentialMutex);
 
@@ -406,7 +391,6 @@ HeartbeatRecord HeartbeatCore::GetSequentialHeartbeatData(const std::string& gam
         if (index >= static_cast<int>(filtered.size())) {
             index = 0;
         }
-        ABPROTECT_CFF_END;
         return filtered[index++];
     } else {
         // 降序模式（LIFO）：从尾开始逆序获取
@@ -415,7 +399,6 @@ HeartbeatRecord HeartbeatCore::GetSequentialHeartbeatData(const std::string& gam
         }
         int reverseIndex = static_cast<int>(filtered.size()) - 1 - index;
         index++;
-        ABPROTECT_CFF_END;
         return filtered[reverseIndex];
     }
 }
@@ -440,7 +423,6 @@ HeartbeatRecord HeartbeatCore::GetSingleHeartbeatPacketByLength(int length) {
 }
 
 HeartbeatRecord HeartbeatCore::GetHeartbeatDataByMode(const std::string& gameID, int length, const std::string& username) {
-    ABPROTECT_CFF_BEGIN;
     HeartbeatRecord rec;
     switch (m_replaceMode) {
     case HBCore::ReplaceMode::RANDOM:
@@ -456,13 +438,11 @@ HeartbeatRecord HeartbeatCore::GetHeartbeatDataByMode(const std::string& gameID,
         rec = GetRandomHeartbeatDataByLength(length);
         break;
     }
-    ABPROTECT_CFF_END;
     return rec;
 }
 
 // ==================== 偏移替换 ====================
 bool HeartbeatCore::ApplyPattern23OffsetReplace(std::vector<uint8_t>& data, const HeartbeatRecord& poolData, const std::string& gameID) {
-    ABPROTECT_VM_BEGIN;
     std::lock_guard<std::mutex> lock(m_pattern23OffsetMutex);
 
     bool anyReplaced = false;
@@ -489,12 +469,10 @@ bool HeartbeatCore::ApplyPattern23OffsetReplace(std::vector<uint8_t>& data, cons
         }
     }
 
-    ABPROTECT_VM_END;
     return anyReplaced;
 }
 
 bool HeartbeatCore::ApplyPattern09OffsetReplace(std::vector<uint8_t>& data, const HeartbeatRecord& poolData, const std::string& gameID) {
-    ABPROTECT_VM_BEGIN;
     std::lock_guard<std::mutex> lock(m_pattern09OffsetMutex);
 
     bool anyReplaced = false;
@@ -521,12 +499,10 @@ bool HeartbeatCore::ApplyPattern09OffsetReplace(std::vector<uint8_t>& data, cons
         }
     }
 
-    ABPROTECT_VM_END;
     return anyReplaced;
 }
 
 bool HeartbeatCore::ApplyPattern62OffsetReplace(std::vector<uint8_t>& data, const HeartbeatRecord& poolData, const std::string& gameID) {
-    ABPROTECT_VM_BEGIN;
     std::lock_guard<std::mutex> lock(m_pattern62OffsetMutex);
 
     bool anyReplaced = false;
@@ -556,7 +532,6 @@ bool HeartbeatCore::ApplyPattern62OffsetReplace(std::vector<uint8_t>& data, cons
         }
     }
 
-    ABPROTECT_VM_END;
     return anyReplaced;
 }
 
@@ -571,14 +546,6 @@ std::vector<uint8_t> HeartbeatCore::ReplaceHeartbeatData(
     const std::string& username,
     const std::string& gameID)
 {
-    ABPROTECT_VM_BEGIN;
-    ABPROTECT_CHECK_DEBUGGER;
-
-    if (!ABProtectLayer::IsLoggedIn()) {
-        m_totalSkipped++;
-        ABPROTECT_VM_END;
-        return originalData;
-    }
 
     m_totalProcessed++;
 
@@ -700,7 +667,6 @@ std::vector<uint8_t> HeartbeatCore::ReplaceHeartbeatData(
     OnReplacementSuccess(ruleKey, gameID, username);
     m_totalReplaced++;
 
-    ABPROTECT_VM_END;
     return result;
 }
 

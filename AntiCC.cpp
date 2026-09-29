@@ -1,8 +1,6 @@
 ﻿#include "AntiCC.h"
 #include "Logger.h"
 #include "DatabaseManager.h"
-#include "ABProtectSDK.h"
-#include "ABProtectIntegration.h"
 #include <algorithm>
 #include <sstream>
 #include <set>
@@ -17,8 +15,6 @@
 // IPStats Implementation
 // ===== 🔥 修复5: 带缓存的信任分数计算 =====
 float IPStats::calculateTrustScore() {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_INTEGRITY;
     auto now = std::chrono::steady_clock::now();
 
     float cached = cachedTrustScore.load();
@@ -27,37 +23,36 @@ float IPStats::calculateTrustScore() {
             now - trustScoreCacheTime).count();
 
         if (cacheDuration < TRUST_SCORE_CACHE_SECONDS) {
-            ABPROTECT_CFF_END;
             return cached;
         }
     }
 
-    // Call cloud function for trust score calculation
-    int64_t hours = 0;
-    if (firstSeenTime != std::chrono::steady_clock::time_point{}) {
-        hours = std::chrono::duration_cast<std::chrono::hours>(now - firstSeenTime).count();
-    }
-    int64_t packedFlags = (hours << 16) | ((int64_t)isWhitelisted << 1) | (int64_t)permanentBan;
+    // 本地信任评分：不再依赖云端
+    const int ok = successfulAuths.load();
+    const int bad = authFailures.load() + failedAttempts.load();
+    const int consec = consecutiveFailures.load();
 
-    int64_t cloudScore = ABProtectLayer::Cloud_TrustScore(
-        successfulAuths.load(), authFailures.load(), failedAttempts.load(), packedFlags);
-
-    float finalScore = (float)cloudScore / 100.0f;
+    float finalScore = 60.0f;
+    if (isWhitelisted) finalScore += 30.0f;
+    if (bad > 0) finalScore -= ((float)bad / (float)(bad + std::max(ok, 1))) * 40.0f;
+    finalScore -= std::min((float)consec * 6.0f, 24.0f);
+    if (permanentBan) finalScore -= 30.0f;
+    if (finalScore < 0.0f) finalScore = 0.0f;
+    if (finalScore > 100.0f) finalScore = 100.0f;
 
     cachedTrustScore.store(finalScore);
     trustScoreCacheTime = now;
 
-    ABPROTECT_CFF_END;
     return finalScore;
 }
 
 int IPStats::getDynamicMaxRequests(int baseMax) {
-    ABPROTECT_CFF_BEGIN;
-    ABPROTECT_CHECK_INTEGRITY;
-    int64_t result = ABProtectLayer::Cloud_DynamicRateLimit(
-        baseMax, (int64_t)(trustScore * 100), successfulAuths.load(), consecutiveFailures);
-    ABPROTECT_CFF_END;
-    return (int)result;
+    const int64_t ts = (int64_t)(trustScore * 100);
+    const double factor = 0.3 + 0.7 * (double)std::min(std::max(ts, 0), 100) / 100.0;
+    int result = (int)(baseMax * factor);
+    if (result < 1) result = 1;
+    if (result > baseMax) result = baseMax;
+    return result;
 }
 
 // IPListManager Implementation

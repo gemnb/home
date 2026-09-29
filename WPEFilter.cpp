@@ -227,7 +227,20 @@ namespace WPEFilter {
     // ==================== FilterManager 瀹炵幇 ====================
 
     int FilterManager::AddFilter(const FilterInfo& filter) {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
+        FilterInfo newFilter = filter;
+        newFilter.id = m_nextId++;
+        newFilter.executionCount = 0;
+
+        m_filters.push_back(newFilter);
+
+        AB_LOG_INFO("[WPE婊ら暅] 娣诲姞婊ら暅鎴愬姛: " + newFilter.name + " (ID: " + std::to_string(newFilter.id) + ")");
+
+        return newFilter.id;
+    }
+
+    bool FilterManager::UpdateFilter(int id, const FilterInfo& filter) {
         std::lock_guard<std::mutex> lock(m_mutex);
 
         for (auto& f : m_filters) {
@@ -241,7 +254,7 @@ namespace WPEFilter {
                 f.executionCount = oldCount;
                 f.createTime = oldCreateTime;
 
-                // 鏇存柊淇敼鏃堕棿
+                // 鏇存柊淇敼鏃堕棿
                 auto now = std::chrono::system_clock::now();
                 auto time = std::chrono::system_clock::to_time_t(now);
                 struct tm timeinfo;
@@ -250,13 +263,11 @@ namespace WPEFilter {
                 strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
                 f.lastModifyTime = buf;
 
-                // 馃敟 璁板綍鎴愬姛鏇存柊
                 AB_LOG_INFO("[WPE婊ら暅] 鏇存柊婊ら暅鎴愬姛: " + f.name + " (ID: " + std::to_string(id) + ")");
 
                 return true;
             }
         }
-        // 馃敟 璁板綍鎵句笉鍒版护闀?
         AB_LOG_WARNING("[WPE婊ら暅] 鏇存柊澶辫触锛屾壘涓嶅埌婊ら暅 ID: " + std::to_string(id));
         return false;
     }

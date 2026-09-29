@@ -48,7 +48,7 @@ float IPStats::calculateTrustScore() {
 
 int IPStats::getDynamicMaxRequests(int baseMax) {
     const int64_t ts = (int64_t)(trustScore * 100);
-    const double factor = 0.3 + 0.7 * (double)std::min(std::max(ts, 0), 100) / 100.0;
+    const double factor = 0.3 + 0.7 * (double)std::min(std::max(ts, (int64_t)0), (int64_t)100) / 100.0;
     int result = (int)(baseMax * factor);
     if (result < 1) result = 1;
     if (result > baseMax) result = baseMax;
